@@ -262,10 +262,14 @@ namespace Engarde_Synthesis
                             if (attack.AttackData.Flags.HasFlag(AttackData.Flag.PowerAttack) &&
                                 _settings.Value.powerAttacks.powerAttackTweaks)
                             {
-                                attack.AttackData.Spell = Engarde.Spell.MCT_PowerBashAttackSpell;
+                                attack.AttackData.Spell.SetTo(Engarde.Spell.MCT_PowerBashAttackSpell);
                             }
                             else if (_settings.Value.basicAttacks.basicAttackTweaks)
                             {
+                                attack.AttackData = new AttackData()
+                                {
+                                    Spell = Engarde.Spell.MCT_BashAttackSpell
+                                };
                                 attack.AttackData.Spell = Engarde.Spell.MCT_BashAttackSpell;
                             }
                         }
@@ -305,7 +309,7 @@ namespace Engarde_Synthesis
                 case "attackPowerStartForward":
                 case "attackPowerStartForwardLeftHand":
                     ChangeBasicAttackStats(attack, 28, 0.1f, 0.5f);
-                    attack.AttackData.AttackType = Skyrim.Keyword.PowerAttackTypeForward;
+                    attack.AttackData.AttackType.SetTo(Skyrim.Keyword.PowerAttackTypeForward);
                     break;
                 case "attackPowerStartBackward":
                     ChangeBasicAttackStats(attack, 65, 0);
@@ -2769,6 +2773,12 @@ namespace Engarde_Synthesis
                 NullValueHandling = NullValueHandling.Ignore
             })!;
 
+            System.Console.WriteLine($"Printing globals");
+            foreach (var glob in state.LoadOrder[Engarde.ModKey].Mod!.Globals)
+            {
+                System.Console.WriteLine($"{glob}");
+            }
+            
             state.PatchGlobals();
             PatchArmors(state);
             PatchWeapons(state);
